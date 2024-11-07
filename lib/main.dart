@@ -1,3 +1,4 @@
+import 'package:blog_app/screens/AccountScreen.dart';
 import 'package:blog_app/screens/HomeScreen.dart';
 import 'package:flutter/material.dart';
 
@@ -117,12 +118,5 @@ class CartScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(child: Text('Cart Screen'));
-  }
-}
-
-class AccountScreen extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Center(child: Text('Account Screen'));
   }
 }
