@@ -1,3 +1,4 @@
+import 'package:blog_app/screens/HomeScreen.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -104,12 +105,6 @@ class _MainScreenState extends State<MainScreen> {
 }
 
 // Individual page widgets
-class HomeScreen extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Center(child: Text('Home Screen'));
-  }
-}
 
 class ShopScreen extends StatelessWidget {
   @override
