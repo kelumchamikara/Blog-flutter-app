@@ -1,9 +1,36 @@
+// main.dart
+
 import 'package:blog_app/screens/AccountScreen.dart';
 import 'package:blog_app/screens/HomeScreen.dart';
+import 'package:blog_app/screens/ShopScreen.dart';
+import 'package:blog_app/screens/CartScreen.dart';
+import 'package:blog_app/screens/LoginScreen.dart'; // Add LoginScreen import
+import 'package:blog_app/providers/cart_provider.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 void main() {
-  runApp(MyEcommerceApp());
+  if (kIsWeb) {
+    Firebase.initializeApp(
+        options: const FirebaseOptions(
+            apiKey: "AIzaSyAc3YB1Mvs23Fd64_OU60NnLnzbmqEuKT0",
+            appId: "1:370709232688:web:3c82269fb564f3f5b041f5",
+            messagingSenderId: "370709232688",
+            projectId: "ecommerce-app-90fd9"));
+  } else {
+    Firebase.initializeApp();
+  }
+
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => CartProvider()),
+      ],
+      child: MyEcommerceApp(),
+    ),
+  );
 }
 
 class MyEcommerceApp extends StatelessWidget {
@@ -14,7 +41,7 @@ class MyEcommerceApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      debugShowCheckedModeBanner: false, // Remove the debug banner
+      debugShowCheckedModeBanner: false,
       home: MainScreen(),
     );
   }
@@ -28,8 +55,7 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   int _selectedIndex = 0;
 
-  // Define pages for each bottom navigation item
-  static List<Widget> _pages = <Widget>[
+  static final List<Widget> _pages = <Widget>[
     HomeScreen(),
     ShopScreen(),
     CartScreen(),
@@ -59,34 +85,72 @@ class _MainScreenState extends State<MainScreen> {
           ),
         ),
         actions: [
+          OutlinedButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => LoginScreen()),
+              );
+            },
+            style: OutlinedButton.styleFrom(
+              padding: EdgeInsets.symmetric(horizontal: 12),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+            ),
+            child: Text(
+              'Login',
+              style: TextStyle(
+                  color: Colors.redAccent, fontWeight: FontWeight.bold),
+            ),
+          ),
           IconButton(
             icon: Icon(Icons.image),
             onPressed: () {
-              // Add functionality here
+              // Image icon functionality
             },
           ),
           IconButton(
             icon: Icon(Icons.chat),
             onPressed: () {
-              // Add functionality for chat
+              // Chat icon functionality
             },
           ),
         ],
       ),
       body: _pages[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Colors.black, // Set background color to black
-        items: const <BottomNavigationBarItem>[
+        backgroundColor: Colors.white,
+        selectedItemColor: Colors.deepPurple,
+        unselectedItemColor: Colors.grey,
+        showUnselectedLabels: true,
+        items: [
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
             label: 'Home',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.store),
+            icon: Icon(Icons.shop),
             label: 'Shop',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.shopping_cart),
+            icon: Stack(
+              children: [
+                Icon(Icons.shopping_cart),
+                if (Provider.of<CartProvider>(context).itemCount > 0)
+                  Positioned(
+                    right: 0,
+                    child: CircleAvatar(
+                      radius: 8,
+                      backgroundColor: Colors.red,
+                      child: Text(
+                        '${Provider.of<CartProvider>(context).itemCount}',
+                        style: TextStyle(fontSize: 12, color: Colors.white),
+                      ),
+                    ),
+                  ),
+              ],
+            ),
             label: 'Cart',
           ),
           BottomNavigationBarItem(
@@ -95,28 +159,8 @@ class _MainScreenState extends State<MainScreen> {
           ),
         ],
         currentIndex: _selectedIndex,
-        selectedItemColor: Colors.blue,
-        unselectedItemColor: const Color.fromARGB(
-            255, 0, 0, 0), // Set unselected icon color to white for visibility
-        showUnselectedLabels: true, // Always show labels for unselected items
         onTap: _onItemTapped,
       ),
     );
-  }
-}
-
-// Individual page widgets
-
-class ShopScreen extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Center(child: Text('Shop Screen'));
-  }
-}
-
-class CartScreen extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Center(child: Text('Cart Screen'));
   }
 }

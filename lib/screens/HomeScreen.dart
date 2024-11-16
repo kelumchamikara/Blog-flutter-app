@@ -1,6 +1,42 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../providers/cart_provider.dart';
 
 class HomeScreen extends StatelessWidget {
+  // Sample product data
+  final List<Map<String, String>> products = [
+    {
+      'name': 'Product 1',
+      'image':
+          'https://tse3.mm.bing.net/th?id=OIP.Qj4osaTcjVPWm5Rl_MXz8gHaHp&pid=Api&P=0&h=220',
+      'price': '\$99.99',
+    },
+    {
+      'name': 'Product 2',
+      'image':
+          'https://tse1.mm.bing.net/th?id=OIP.BO84XFxhV_PyG4PnEZsqxAAAAA&pid=Api&P=0&h=220',
+      'price': '\$79.99',
+    },
+    {
+      'name': 'Product 3',
+      'image':
+          'https://tse3.mm.bing.net/th?id=OIP.AEOxCTm3Sti3WgCMIrFDsAAAAA&pid=Api&P=0&h=220',
+      'price': '\$79.99',
+    },
+    {
+      'name': 'Product 4',
+      'image':
+          'https://tse1.mm.bing.net/th?id=OIP.FpasC3bbwA89DmCu_69mdAHaHa&pid=Api&P=0&h=220',
+      'price': '\$79.99',
+    },
+    {
+      'name': 'Product 5',
+      'image':
+          'https://tse1.mm.bing.net/th?id=OIP.BO84XFxhV_PyG4PnEZsqxAAAAA&pid=Api&P=0&h=220',
+      'price': '\$79.99',
+    },
+  ];
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -9,7 +45,7 @@ class HomeScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Banner Section
+            // Banner Section (This remains the same)
             Container(
               width: double.infinity,
               height: 180,
@@ -17,7 +53,7 @@ class HomeScreen extends StatelessWidget {
                 borderRadius: BorderRadius.circular(12),
                 image: DecorationImage(
                   image: NetworkImage(
-                      'https://via.placeholder.com/600x300.png?text=Banner+Image'), // Replace with your banner image
+                      'https://via.placeholder.com/600x300.png?text=Banner+Image'),
                   fit: BoxFit.cover,
                 ),
               ),
@@ -44,30 +80,13 @@ class HomeScreen extends StatelessWidget {
             ),
             SizedBox(height: 20),
 
-            // Categories Section
-            Text(
-              'Categories',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 12),
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children: [
-                  _buildCategoryItem('Electronics', Icons.electrical_services),
-                  _buildCategoryItem('Fashion', Icons.checkroom),
-                  _buildCategoryItem('Home', Icons.home),
-                  _buildCategoryItem('Beauty', Icons.brush),
-                  _buildCategoryItem('Sports', Icons.sports),
-                ],
-              ),
-            ),
-            SizedBox(height: 20),
-
             // Featured Products Section
             Text(
               'Featured Products',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.blueAccent),
             ),
             SizedBox(height: 12),
             GridView.builder(
@@ -79,31 +98,9 @@ class HomeScreen extends StatelessWidget {
                 crossAxisSpacing: 12,
                 mainAxisSpacing: 12,
               ),
-              itemCount: 4, // Number of featured products
+              itemCount: products.length,
               itemBuilder: (context, index) {
-                return _buildProductItem();
-              },
-            ),
-            SizedBox(height: 20),
-
-            // Popular Items Section
-            Text(
-              'Popular Items',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 12),
-            GridView.builder(
-              shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                childAspectRatio: 0.75,
-                crossAxisSpacing: 12,
-                mainAxisSpacing: 12,
-              ),
-              itemCount: 4, // Number of popular items
-              itemBuilder: (context, index) {
-                return _buildProductItem();
+                return _buildProductItem(context, products[index]);
               },
             ),
           ],
@@ -112,40 +109,17 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  // Widget for individual category items
-  Widget _buildCategoryItem(String name, IconData icon) {
-    return Container(
-      margin: EdgeInsets.only(right: 12),
-      padding: EdgeInsets.all(8),
-      decoration: BoxDecoration(
-        color: Colors.blueAccent,
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, color: Colors.white, size: 28),
-          SizedBox(height: 6),
-          Text(
-            name,
-            style: TextStyle(color: Colors.white, fontSize: 12),
-          ),
-        ],
-      ),
-    );
-  }
-
-  // Widget for individual product items
-  Widget _buildProductItem() {
+  Widget _buildProductItem(BuildContext context, Map<String, String> product) {
+    final cartProvider = Provider.of<CartProvider>(context, listen: false);
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(8),
         color: Colors.white,
         boxShadow: [
           BoxShadow(
-            color: Colors.black12,
-            blurRadius: 4,
-            offset: Offset(2, 2),
+            color: Colors.blueAccent.withOpacity(0.2),
+            blurRadius: 10,
+            offset: Offset(0, 4),
           ),
         ],
       ),
@@ -155,8 +129,8 @@ class HomeScreen extends StatelessWidget {
           Expanded(
             child: ClipRRect(
               borderRadius: BorderRadius.vertical(top: Radius.circular(8)),
-              child: Image.asset(
-                'assets/images/product1.jpg', // Replace with product image URL
+              child: Image.network(
+                product['image']!,
                 fit: BoxFit.cover,
                 width: double.infinity,
               ),
@@ -171,17 +145,33 @@ class HomeScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Product Name',
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                      product['name']!,
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                        color: Colors.black87,
+                      ),
                     ),
-                    Text('\$99.99', style: TextStyle(color: Colors.blueAccent)),
+                    Text(
+                      product['price']!,
+                      style: TextStyle(
+                        color: Colors.blueAccent,
+                        fontSize: 14,
+                      ),
+                    ),
                   ],
                 ),
                 IconButton(
                   icon: Icon(Icons.add_shopping_cart),
                   color: Colors.blueAccent,
                   onPressed: () {
-                    // Handle Add to Cart functionality here
+                    cartProvider.addToCart(product);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('${product['name']} added to cart'),
+                        duration: Duration(seconds: 1),
+                      ),
+                    );
                   },
                 ),
               ],
