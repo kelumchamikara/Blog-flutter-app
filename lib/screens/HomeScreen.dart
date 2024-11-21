@@ -35,6 +35,12 @@ class HomeScreen extends StatelessWidget {
           'https://tse1.mm.bing.net/th?id=OIP.BO84XFxhV_PyG4PnEZsqxAAAAA&pid=Api&P=0&h=220',
       'price': '\$79.99',
     },
+    {
+      'name': 'Product 6',
+      'image':
+          'https://tse1.mm.bing.net/th?id=OIP.BO84XFxhV_PyG4PnEZsqxAAAAA&pid=Api&P=0&h=220',
+      'price': '\$79.99',
+    },
   ];
 
   @override
@@ -51,7 +57,7 @@ class HomeScreen extends StatelessWidget {
               height: 180,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(12),
-                image: DecorationImage(
+                image: const DecorationImage(
                   image: NetworkImage(
                       'https://via.placeholder.com/600x300.png?text=Banner+Image'),
                   fit: BoxFit.cover,
